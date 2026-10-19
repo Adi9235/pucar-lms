@@ -30,6 +30,7 @@
     <a href="{% url 'courses:lesson_create' course.pk %}" role="button" class="compact">Add lesson</a>
   </div>
   {% if lessons %}
+    <div class="overflow-auto">
     <table>
       <thead><tr><th class="num">#</th><th>Title</th><th></th></tr></thead>
       <tbody>
@@ -47,6 +48,7 @@
         {% endfor %}
       </tbody>
     </table>
+    </div>
   {% else %}
     <div class="empty"><p>No lessons yet. Add the first one to get started.</p></div>
   {% endif %}
@@ -62,6 +64,7 @@
       <a href="{% url 'quizzes:question_create' course.pk %}" role="button" class="compact">Add question</a>
     </div>
     {% if quiz.questions.all %}
+      <div class="overflow-auto">
       <table>
         <thead><tr><th class="num">#</th><th>Question</th><th>Correct answer</th><th></th></tr></thead>
         <tbody>
@@ -80,6 +83,7 @@
           {% endfor %}
         </tbody>
       </table>
+      </div>
     {% else %}
       <div class="empty"><p>No questions yet. Learners will see the quiz once it has at least one.</p></div>
     {% endif %}

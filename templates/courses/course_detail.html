@@ -61,6 +61,7 @@
       <a href="{% url 'quizzes:take' course.pk %}" role="button">{% if attempts %}Retake quiz{% else %}Take the quiz{% endif %}</a>
     </div>
     {% if attempts %}
+    <div class="overflow-auto">
     <table>
       <thead><tr><th>Attempt</th><th class="num">Score</th><th>Result</th><th></th></tr></thead>
       <tbody>
@@ -74,6 +75,7 @@
         {% endfor %}
       </tbody>
     </table>
+    </div>
     {% endif %}
   </article>
 </section>

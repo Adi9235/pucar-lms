@@ -24,7 +24,7 @@
     <div class="overflow-auto">
       <table class="choices-table">
         <thead>
-          <tr><th>Choice</th><th>Correct</th>{% if formset.can_delete %}<th>Remove</th>{% endif %}</tr>
+          <tr><th>Choice</th><th>Correct</th>{% if formset.initial_form_count %}<th>Remove</th>{% endif %}</tr>
         </thead>
         <tbody>
           {% for choice_form in formset %}
@@ -36,7 +36,7 @@
               {{ choice_form.text.errors }}
             </td>
             <td>{{ choice_form.is_correct }}</td>
-            {% if formset.can_delete %}<td>{% if choice_form.instance.pk %}{{ choice_form.DELETE }}{% endif %}</td>{% endif %}
+            {% if formset.initial_form_count %}<td>{% if choice_form.instance.pk %}{{ choice_form.DELETE }}{% endif %}</td>{% endif %}
           </tr>
           {% endfor %}
         </tbody>

@@ -24,7 +24,7 @@
             <li><a href="{% url 'courses:my_courses' %}" {% if current == 'my_courses' %}aria-current="page"{% endif %}>My courses</a></li>
           {% endif %}
           {% if user.is_staff %}<li><a href="{% url 'admin:index' %}">Admin</a></li>{% endif %}
-          <li class="user-chip">{{ user.username }} <small>{{ user.get_role_display }}</small></li>
+          <li class="user-chip">{{ user.username }} <small>{% if user.is_superuser %}Admin{% else %}{{ user.get_role_display }}{% endif %}</small></li>
           <li>
             <form method="post" action="{% url 'accounts:logout' %}" class="inline">
               {% csrf_token %}
