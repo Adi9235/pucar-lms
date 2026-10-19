@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}My teaching{% endblock %}
+{% block content %}
+<div class="page-head">
+  <hgroup>
+    <h1>My teaching</h1>
+    <p>Courses you have created.</p>
+  </hgroup>
+  <a href="{% url 'courses:course_create' %}" role="button">New course</a>
+</div>
+
+{% if courses %}
+<div class="overflow-auto">
+  <table class="striped">
+    <thead>
+      <tr><th>Course</th><th>Status</th><th class="num">Lessons</th><th class="num">Learners</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for course in courses %}
+      <tr>
+        <td><a href="{% url 'courses:course_manage' course.pk %}"><strong>{{ course.title }}</strong></a></td>
+        <td>{% include "courses/_status_badge.html" %}</td>
+        <td class="num">{{ course.lesson_count }}</td>
+        <td class="num">{{ course.enrollment_count }}</td>
+        <td>
+          <div class="actions">
+            <a href="{% url 'courses:course_manage' course.pk %}">Manage</a>
+            <a href="{% url 'courses:dashboard' course.pk %}">Progress</a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty">
+  <p>You have no courses yet.</p>
+  <a href="{% url 'courses:course_create' %}" role="button">Create your first course</a>
+</div>
+{% endif %}
+{% endblock %}

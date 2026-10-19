@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Progress · {{ course.title }}{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="{% url 'courses:teach_list' %}">My teaching</a></li>
+    <li><a href="{% url 'courses:course_manage' course.pk %}">{{ course.title }}</a></li>
+    <li>Learner progress</li>
+  </ul>
+</nav>
+
+<hgroup>
+  <h1>Learner progress</h1>
+  <p>{{ enrollments|length }} learner{{ enrollments|length|pluralize }} enrolled in {{ course.title }}{% if course.quiz %} · quiz pass mark {{ course.quiz.pass_mark }}%{% endif %}</p>
+</hgroup>
+
+{% if enrollments %}
+<div class="overflow-auto">
+  <table class="striped">
+    <thead>
+      <tr>
+        <th>Learner</th>
+        <th>Enrolled</th>
+        <th>Lessons done</th>
+        <th class="num">Progress</th>
+        <th class="num">Best score</th>
+        <th>Passed</th>
+        <th class="num">Attempts</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for enrollment in enrollments %}
+      <tr>
+        <td><strong>{{ enrollment.learner.get_full_name|default:enrollment.learner.username }}</strong></td>
+        <td>{{ enrollment.enrolled_at|date:"j M Y" }}</td>
+        <td>{{ enrollment.lessons_done }} of {{ enrollment.lessons_total }}</td>
+        <td class="num">{{ enrollment.progress_percent }}%</td>
+        <td class="num">{% if enrollment.best_score is not None %}{{ enrollment.best_score }}%{% else %}-{% endif %}</td>
+        <td>{% if enrollment.has_passed %}<span class="badge ok">Yes</span>{% else %}<span class="badge">No</span>{% endif %}</td>
+        <td class="num">{{ enrollment.attempt_count }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty"><p>No learners have enrolled yet.</p></div>
+{% endif %}
+{% endblock %}

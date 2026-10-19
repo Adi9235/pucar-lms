@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Catalogue{% endblock %}
+{% block content %}
+<hgroup>
+  <h1>Course catalogue</h1>
+  <p>Short courses to help you learn new processes.</p>
+</hgroup>
+
+{% if courses %}
+<div class="card-grid">
+  {% for course in courses %}
+  <article>
+    <header class="card-title">
+      <a href="{% url 'courses:detail' course.pk %}"><strong>{{ course.title }}</strong></a>
+      {% if course.pk in enrolled_ids %}<span class="badge ok">Enrolled</span>{% endif %}
+    </header>
+    <p>{{ course.description|truncatewords:28 }}</p>
+    <footer class="meta">
+      {{ course.instructor.get_full_name|default:course.instructor.username }} · {{ course.lesson_count }} lesson{{ course.lesson_count|pluralize }}
+    </footer>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty"><p>No courses are published yet. Check back soon.</p></div>
+{% endif %}
+{% endblock %}

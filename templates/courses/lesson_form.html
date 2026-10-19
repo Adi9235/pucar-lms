@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{% if object %}Edit lesson{% else %}New lesson{% endif %}{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="{% url 'courses:teach_list' %}">My teaching</a></li>
+    <li><a href="{% url 'courses:course_manage' course.pk %}">{{ course.title }}</a></li>
+    <li>{% if object %}Edit lesson{% else %}New lesson{% endif %}</li>
+  </ul>
+</nav>
+<article>
+  <h1>{% if object %}Edit lesson{% else %}New lesson{% endif %}</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <div class="actions">
+      <button type="submit">Save lesson</button>
+      <a href="{% url 'courses:course_manage' course.pk %}">Cancel</a>
+    </div>
+  </form>
+</article>
+{% endblock %}

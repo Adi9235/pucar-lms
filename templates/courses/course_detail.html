@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}{{ course.title }}{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="{% url 'courses:catalogue' %}">Catalogue</a></li>
+    <li>{{ course.title }}</li>
+  </ul>
+</nav>
+
+<div class="page-head">
+  <hgroup>
+    <h1>{{ course.title }}{% if not course.is_published %} <span class="badge warn">Closed to new learners</span>{% endif %}</h1>
+    <p>By {{ course.instructor.get_full_name|default:course.instructor.username }} · {{ lessons|length }} lesson{{ lessons|length|pluralize }}</p>
+  </hgroup>
+  {% if not enrollment %}
+    <form method="post" action="{% url 'courses:enrol' course.pk %}" class="inline">
+      {% csrf_token %}
+      <button type="submit">Enrol in this course</button>
+    </form>
+  {% endif %}
+</div>
+
+{% if course.description %}<div class="lesson-body">{{ course.description|linebreaks }}</div>{% endif %}
+
+{% if enrollment %}
+<article>
+  <h2>Your progress</h2>
+  {% include "courses/_progress.html" %}
+</article>
+{% endif %}
+
+<section>
+  <h2>Lessons</h2>
+  {% if lessons %}
+    <ol class="lesson-list">
+      {% for lesson in lessons %}
+      <li{% if lesson.pk in completed_ids %} class="done"{% endif %}>
+        {% if enrollment %}
+          <a href="{% url 'courses:lesson' course.pk lesson.pk %}">{{ lesson.title }}</a>
+        {% else %}
+          <span>{{ lesson.title }}</span>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ol>
+    {% if not enrollment %}<p class="meta">Enrol to open the lessons.</p>{% endif %}
+  {% else %}
+    <div class="empty"><p>This course has no lessons yet.</p></div>
+  {% endif %}
+</section>
+
+{% if quiz and enrollment %}
+<section>
+  <article>
+    <div class="page-head">
+      <hgroup>
+        <h2>{{ quiz.title }}</h2>
+        <p>{{ quiz.question_count }} question{{ quiz.question_count|pluralize }} · pass mark {{ quiz.pass_mark }}%</p>
+      </hgroup>
+      <a href="{% url 'quizzes:take' course.pk %}" role="button">{% if attempts %}Retake quiz{% else %}Take the quiz{% endif %}</a>
+    </div>
+    {% if attempts %}
+    <table>
+      <thead><tr><th>Attempt</th><th class="num">Score</th><th>Result</th><th></th></tr></thead>
+      <tbody>
+        {% for attempt in attempts %}
+        <tr>
+          <td>{{ attempt.submitted_at|date:"j M Y, H:i" }}</td>
+          <td class="num">{{ attempt.score_percent }}%</td>
+          <td>{% if attempt.passed %}<span class="badge ok">Passed</span>{% else %}<span class="badge bad">Not passed</span>{% endif %}</td>
+          <td><a href="{% url 'quizzes:attempt_result' attempt.pk %}">Review</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </article>
+</section>
+{% endif %}
+{% endblock %}

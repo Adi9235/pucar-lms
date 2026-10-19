@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ course.title }}{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="{% url 'courses:teach_list' %}">My teaching</a></li>
+    <li>{{ course.title }}</li>
+  </ul>
+</nav>
+
+<div class="page-head">
+  <hgroup>
+    <h1>{{ course.title }} {% include "courses/_status_badge.html" %}</h1>
+    <p>{{ lessons|length }} lesson{{ lessons|length|pluralize }} · {{ enrollment_count }} learner{{ enrollment_count|pluralize }} enrolled</p>
+  </hgroup>
+  <div class="actions">
+    <a href="{% url 'courses:dashboard' course.pk %}" role="button" class="secondary">Learner progress</a>
+    <a href="{% url 'courses:course_update' course.pk %}" role="button" class="secondary outline">Edit course</a>
+    <a href="{% url 'courses:course_delete' course.pk %}" role="button" class="danger outline">Delete</a>
+  </div>
+</div>
+
+{% if not course.is_published %}
+  <div class="message warning">This course is a draft. Learners who are not enrolled can't see it. Edit the course to publish it.</div>
+{% endif %}
+
+<section>
+  <div class="page-head">
+    <h2>Lessons</h2>
+    <a href="{% url 'courses:lesson_create' course.pk %}" role="button" class="compact">Add lesson</a>
+  </div>
+  {% if lessons %}
+    <table>
+      <thead><tr><th class="num">#</th><th>Title</th><th></th></tr></thead>
+      <tbody>
+        {% for lesson in lessons %}
+        <tr>
+          <td class="num">{{ lesson.order }}</td>
+          <td>{{ lesson.title }}{% if lesson.video_url %} <span class="badge">Video</span>{% endif %}</td>
+          <td>
+            <div class="actions">
+              <a href="{% url 'courses:lesson_update' course.pk lesson.pk %}">Edit</a>
+              <a href="{% url 'courses:lesson_delete' course.pk lesson.pk %}">Delete</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="empty"><p>No lessons yet. Add the first one to get started.</p></div>
+  {% endif %}
+</section>
+{% endblock %}

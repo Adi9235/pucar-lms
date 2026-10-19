@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Delete{% endblock %}
+{% block content %}
+<article class="narrow">
+  <h1>Delete “{{ object }}”?</h1>
+  <p>This cannot be undone.</p>
+  <form method="post">
+    {% csrf_token %}
+    <div class="actions">
+      <button type="submit" class="danger">Delete</button>
+      <a href="{% url 'courses:course_manage' course.pk %}">Cancel</a>
+    </div>
+  </form>
+</article>
+{% endblock %}

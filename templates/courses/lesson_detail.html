@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ lesson.title }}{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="{% url 'courses:my_courses' %}">My courses</a></li>
+    <li><a href="{% url 'courses:detail' course.pk %}">{{ course.title }}</a></li>
+    <li>Lesson {{ lesson.order }}</li>
+  </ul>
+</nav>
+
+<article>
+  <header class="card-title">
+    <h1>{{ lesson.title }}</h1>
+    {% if is_completed %}<span class="badge ok">Completed</span>{% endif %}
+  </header>
+
+  <div class="lesson-body">{{ lesson.content|linebreaks }}</div>
+
+  {% if lesson.video_url %}
+    <p><a href="{{ lesson.video_url }}" target="_blank" rel="noopener noreferrer">Watch the video for this lesson ↗</a></p>
+  {% endif %}
+
+  <footer>
+    {% if not is_completed %}
+      <form method="post" action="{% url 'courses:lesson_complete' course.pk lesson.pk %}" class="inline">
+        {% csrf_token %}
+        <button type="submit">Mark as complete{% if next_lesson %} and continue{% endif %}</button>
+      </form>
+    {% else %}
+      <p class="meta">You have completed this lesson.</p>
+    {% endif %}
+  </footer>
+</article>
+
+<nav class="pager" aria-label="Lesson navigation">
+  <div>{% if previous_lesson %}<a href="{% url 'courses:lesson' course.pk previous_lesson.pk %}">← {{ previous_lesson.title }}</a>{% endif %}</div>
+  <div>{% if next_lesson %}<a href="{% url 'courses:lesson' course.pk next_lesson.pk %}">{{ next_lesson.title }} →</a>{% else %}<a href="{% url 'courses:detail' course.pk %}">Back to course →</a>{% endif %}</div>
+</nav>
+{% endblock %}

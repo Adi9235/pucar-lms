@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}My courses{% endblock %}
+{% block content %}
+<hgroup>
+  <h1>My courses</h1>
+  <p>Courses you are enrolled in.</p>
+</hgroup>
+
+{% if enrollments %}
+<div class="card-grid">
+  {% for enrollment in enrollments %}
+  {% with course=enrollment.course %}
+  <article>
+    <header class="card-title">
+      <a href="{% url 'courses:detail' course.pk %}"><strong>{{ course.title }}</strong></a>
+      {% if enrollment.has_passed %}<span class="badge ok">Quiz passed</span>{% endif %}
+    </header>
+    {% include "courses/_progress.html" %}
+    <footer class="meta">
+      {% if enrollment.best_score is not None %}
+        Best quiz score {{ enrollment.best_score }}%
+      {% elif course.quiz %}
+        Quiz not taken yet
+      {% else %}
+        No quiz
+      {% endif %}
+    </footer>
+  </article>
+  {% endwith %}
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty">
+  <p>You haven't enrolled in any courses yet.</p>
+  <a href="{% url 'courses:catalogue' %}" role="button">Browse the catalogue</a>
+</div>
+{% endif %}
+{% endblock %}
