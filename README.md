@@ -10,13 +10,13 @@ There are no other dependencies.
 
 ## Requirements
 
-- Python 3.10 or newer (tested on 3.13)
+- Python 3.10 or newer (tested on 3.12)
 - git
 
 ## Setup
 
 ```bash
-git clone <repo-url> pucar-lms
+git clone https://github.com/Adi9235/pucar-lms.git
 cd pucar-lms
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate

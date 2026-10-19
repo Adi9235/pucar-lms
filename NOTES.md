@@ -81,11 +81,9 @@ Two details worth knowing:
 - The stretch goals: REST API, lesson locking, certificates, search, CSV export, Malayalam
   translation, Docker and deployment, a full accessibility pass.
 - Instructor invite links instead of admin promotion.
-- Course versioning, so enrolled learners could keep the version they started.
 - A shorter, sliding session (a working day) for shared court-office computers.
-- Postgres for production, plus pagination on the catalogue and dashboard.
 - Drag-and-drop reordering of lessons and questions instead of typing positions.
 
 ## Time spent
 
-About _ hours.
+About 3 hours.

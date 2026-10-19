@@ -1,9 +1,14 @@
 /* Small additions on top of Pico.css. Colours use Pico variables so dark mode keeps working. */
 
 :root {
+  --pico-font-size: 100%;
   --ok: #2e7d4f;
   --warn: #b26a00;
   --bad: #c0392b;
+}
+
+@media (min-width: 1280px) {
+  .container { max-width: 1140px; }
 }
 
 body { display: flex; flex-direction: column; min-height: 100vh; }
