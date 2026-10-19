@@ -42,7 +42,9 @@ class BaseChoiceFormSet(BaseInlineFormSet):
             return
         # Blank extra rows have empty cleaned_data; rows ticked for deletion don't count.
         kept = [
-            f.cleaned_data for f in self.forms if f.cleaned_data and not f.cleaned_data["DELETE"]
+            f.cleaned_data
+            for f in self.forms
+            if f.cleaned_data and not f.cleaned_data.get("DELETE")
         ]
         if sum(1 for choice in kept if choice["is_correct"]) != 1:
             raise ValidationError("Mark exactly one choice as correct.")

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.db.models import Count
 
+from .forms import BaseChoiceFormSet
 from .models import AttemptAnswer, Choice, Question, Quiz, QuizAttempt
 
 
@@ -28,6 +29,7 @@ class QuizAdmin(admin.ModelAdmin):
 
 class ChoiceInline(admin.TabularInline):
     model = Choice
+    formset = BaseChoiceFormSet  # same "exactly one correct" rule and safe save order as the app
     fields = ("text", "is_correct")
     extra = 0
 
