@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Sign up{% endblock %}
+{% block content %}
+<article class="narrow">
+  <hgroup>
+    <h1>Create your account</h1>
+    <p>New accounts are learners. Ask an admin if you need instructor access.</p>
+  </hgroup>
+  <form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Sign up</button>
+  </form>
+  <p class="meta">Already have an account? <a href="{% url 'accounts:login' %}">Log in</a>.</p>
+</article>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Not found{% endblock %}
+{% block content %}
+<div class="empty">
+  <h1>Page not found</h1>
+  <p>It may have been removed, or it isn't available to you.</p>
+  <a href="{% url 'home' %}" role="button">Go to your home page</a>
+</div>
+{% endblock %}

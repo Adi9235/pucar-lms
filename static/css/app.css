@@ -1,0 +1,85 @@
+/* Small additions on top of Pico.css. Colours use Pico variables so dark mode keeps working. */
+
+:root {
+  --ok: #2e7d4f;
+  --warn: #b26a00;
+  --bad: #c0392b;
+}
+
+body { display: flex; flex-direction: column; min-height: 100vh; }
+main.container { flex: 1; padding-top: 1.5rem; }
+
+/* Header */
+.site-header { border-bottom: 1px solid var(--pico-muted-border-color); background: var(--pico-card-background-color); }
+.site-header nav { padding-block: .25rem; }
+.brand { font-weight: 800; letter-spacing: .02em; text-decoration: none; }
+.brand span { color: var(--pico-muted-color); font-weight: 600; }
+.user-chip { color: var(--pico-muted-color); }
+.user-chip small { margin-left: .25rem; padding: .1rem .5rem; border-radius: 999px; border: 1px solid var(--pico-muted-border-color); font-size: .75rem; }
+.site-footer { padding-block: 1.5rem; color: var(--pico-muted-color); text-align: center; }
+
+/* Buttons and inline forms */
+.compact, button.compact, [role="button"].compact { padding: .35rem .8rem; font-size: .875rem; margin: 0; width: auto; }
+form.inline { display: inline; margin: 0; }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.actions form { margin: 0; }
+.danger, button.danger { --pico-background-color: var(--bad); --pico-border-color: var(--bad); --pico-color: #fff; }
+.danger.outline { --pico-background-color: transparent; --pico-color: var(--bad); }
+
+/* Page header */
+.page-head { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; }
+.page-head hgroup { margin: 0; }
+.page-head h1 { margin-bottom: .25rem; }
+
+/* Flash messages */
+.messages { display: grid; gap: .5rem; margin-bottom: 1.5rem; }
+.message { padding: .75rem 1rem; border-radius: var(--pico-border-radius); border-left: 4px solid var(--pico-primary); background: var(--pico-card-background-color); box-shadow: var(--pico-card-box-shadow); }
+.message.success { border-left-color: var(--ok); }
+.message.warning { border-left-color: var(--warn); }
+.message.error { border-left-color: var(--bad); }
+
+/* Badges */
+.badge { display: inline-block; padding: .1rem .6rem; border-radius: 999px; font-size: .75rem; font-weight: 600; line-height: 1.6; vertical-align: middle; white-space: nowrap; background: var(--pico-muted-border-color); color: var(--pico-color); }
+.badge.ok { background: var(--ok); color: #fff; }
+.badge.warn { background: var(--warn); color: #fff; }
+.badge.bad { background: var(--bad); color: #fff; }
+
+/* Cards and lists */
+.card-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
+.card-grid article { margin: 0; display: flex; flex-direction: column; }
+.card-grid article > p { flex: 1; }
+.card-title { display: flex; justify-content: space-between; gap: .5rem; align-items: baseline; }
+.meta { color: var(--pico-muted-color); font-size: .875rem; }
+.empty { padding: 2.5rem 1rem; text-align: center; color: var(--pico-muted-color); border: 1px dashed var(--pico-muted-border-color); border-radius: var(--pico-border-radius); }
+.empty p { margin-bottom: 1rem; }
+
+.lesson-list { list-style: none; padding: 0; counter-reset: lesson; }
+.lesson-list li { counter-increment: lesson; display: flex; gap: .75rem; align-items: center; padding: .6rem 0; border-bottom: 1px solid var(--pico-muted-border-color); list-style: none; }
+.lesson-list li::before { content: counter(lesson); display: inline-grid; place-items: center; width: 1.75rem; height: 1.75rem; flex: none; border-radius: 50%; font-size: .8rem; font-weight: 700; border: 1px solid var(--pico-muted-border-color); }
+.lesson-list li.done::before { content: "✓"; background: var(--ok); border-color: var(--ok); color: #fff; }
+
+progress { margin-bottom: .25rem; }
+
+/* Lesson reading */
+.lesson-body { font-size: 1.05rem; line-height: 1.75; }
+.pager { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; }
+
+/* Quiz */
+fieldset.question { padding: 1rem 1.25rem; border: 1px solid var(--pico-muted-border-color); border-radius: var(--pico-border-radius); margin-bottom: 1rem; }
+fieldset.question legend { font-weight: 600; padding: 0 .25rem; }
+.score { font-size: 3rem; font-weight: 800; line-height: 1; margin: .5rem 0; }
+.score.ok { color: var(--ok); }
+.score.bad { color: var(--bad); }
+.answer-right { color: var(--ok); font-weight: 600; }
+.answer-wrong { color: var(--bad); font-weight: 600; }
+
+/* Forms */
+.errorlist { list-style: none; padding: 0; margin: .25rem 0 .75rem; color: var(--bad); font-size: .875rem; }
+.errorlist li { list-style: none; }
+.helptext { display: block; color: var(--pico-muted-color); font-size: .8rem; margin-top: -.5rem; margin-bottom: .75rem; }
+.narrow { max-width: 30rem; margin-inline: auto; }
+.choices-table td { vertical-align: middle; }
+.choices-table input[type="text"] { margin: 0; }
+.choices-table input[type="checkbox"] { margin: 0; }
+
+table td.num, table th.num { text-align: right; }

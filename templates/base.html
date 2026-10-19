@@ -1,0 +1,58 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Home{% endblock %} · PUCAR LMS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.0.6/css/pico.min.css">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+  {% with current=request.resolver_match.url_name %}
+  <header class="site-header">
+    <nav class="container">
+      <ul>
+        <li><a href="{% url 'home' %}" class="brand">PUCAR <span>LMS</span></a></li>
+      </ul>
+      <ul>
+        {% if user.is_authenticated %}
+          {% if user.is_instructor %}
+            <li><a href="{% url 'courses:teach_list' %}" {% if current == 'teach_list' %}aria-current="page"{% endif %}>My teaching</a></li>
+            <li><a href="{% url 'courses:course_create' %}" {% if current == 'course_create' %}aria-current="page"{% endif %}>New course</a></li>
+          {% else %}
+            <li><a href="{% url 'courses:catalogue' %}" {% if current == 'catalogue' %}aria-current="page"{% endif %}>Catalogue</a></li>
+            <li><a href="{% url 'courses:my_courses' %}" {% if current == 'my_courses' %}aria-current="page"{% endif %}>My courses</a></li>
+          {% endif %}
+          {% if user.is_staff %}<li><a href="{% url 'admin:index' %}">Admin</a></li>{% endif %}
+          <li class="user-chip">{{ user.username }} <small>{{ user.get_role_display }}</small></li>
+          <li>
+            <form method="post" action="{% url 'accounts:logout' %}" class="inline">
+              {% csrf_token %}
+              <button type="submit" class="secondary outline compact">Log out</button>
+            </form>
+          </li>
+        {% else %}
+          <li><a href="{% url 'accounts:login' %}">Log in</a></li>
+          <li><a href="{% url 'accounts:signup' %}" role="button" class="compact">Sign up</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+  {% endwith %}
+
+  <main class="container">
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="message {{ message.tags }}" role="status">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="container site-footer">
+    <small>PUCAR LMS · Internal staff training</small>
+  </footer>
+</body>
+</html>
