@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}{% if form.instance.pk %}Edit question{% else %}New question{% endif %}{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="{% url 'courses:teach_list' %}">My teaching</a></li>
+    <li><a href="{% url 'courses:course_manage' course.pk %}">{{ course.title }}</a></li>
+    <li>{% if form.instance.pk %}Edit question{% else %}New question{% endif %}</li>
+  </ul>
+</nav>
+<article>
+  <hgroup>
+    <h1>{% if form.instance.pk %}Edit question{% else %}New question{% endif %}</h1>
+    <p>{{ quiz.title }}</p>
+  </hgroup>
+  <form method="post">
+    {% csrf_token %}
+    {{ form }}
+
+    <h2>Answer choices</h2>
+    <p class="meta">Fill in at least two choices and tick the one correct answer. Leave spare rows blank.</p>
+    {{ formset.management_form }}
+    {{ formset.non_form_errors }}
+    <div class="overflow-auto">
+      <table class="choices-table">
+        <thead>
+          <tr><th>Choice</th><th>Correct</th>{% if formset.can_delete %}<th>Remove</th>{% endif %}</tr>
+        </thead>
+        <tbody>
+          {% for choice_form in formset %}
+          <tr>
+            <td>
+              {% for hidden in choice_form.hidden_fields %}{{ hidden }}{% endfor %}
+              <label class="visually-hidden" for="{{ choice_form.text.id_for_label }}">Choice {{ forloop.counter }}</label>
+              {{ choice_form.text }}
+              {{ choice_form.text.errors }}
+            </td>
+            <td>{{ choice_form.is_correct }}</td>
+            {% if formset.can_delete %}<td>{% if choice_form.instance.pk %}{{ choice_form.DELETE }}{% endif %}</td>{% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="actions">
+      <button type="submit">Save question</button>
+      <a href="{% url 'courses:course_manage' course.pk %}">Cancel</a>
+    </div>
+  </form>
+</article>
+{% endblock %}

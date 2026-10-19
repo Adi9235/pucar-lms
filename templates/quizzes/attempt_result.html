@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Quiz result{% endblock %}
+{% block content %}
+{% with course=attempt.enrollment.course %}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="{% url 'courses:my_courses' %}">My courses</a></li>
+    <li><a href="{% url 'courses:detail' course.pk %}">{{ course.title }}</a></li>
+    <li>Quiz result</li>
+  </ul>
+</nav>
+
+<article>
+  <hgroup>
+    <h1>{{ attempt.quiz.title }}</h1>
+    <p>Submitted {{ attempt.submitted_at|date:"j M Y, H:i" }}</p>
+  </hgroup>
+  <p class="score {% if attempt.passed %}ok{% else %}bad{% endif %}">{{ attempt.score_percent }}%</p>
+  <p>
+    {% if attempt.passed %}<span class="badge ok">Passed</span>{% else %}<span class="badge bad">Not passed</span>{% endif %}
+    {{ attempt.correct_count }} of {{ attempt.total_questions }} correct · pass mark {{ attempt.quiz.pass_mark }}%
+  </p>
+</article>
+
+<h2>Your answers</h2>
+<ol>
+  {% for answer in attempt.answers.all %}
+  <li>
+    <p><strong>{{ answer.question.text }}</strong><br>
+      {{ answer.selected_choice.text }} ·
+      {% if answer.is_correct %}<span class="answer-right">✓ Correct</span>{% else %}<span class="answer-wrong">✗ Incorrect</span>{% endif %}
+    </p>
+  </li>
+  {% empty %}
+  <li class="meta">The questions in this attempt have since been removed from the quiz.</li>
+  {% endfor %}
+</ol>
+
+<div class="actions">
+  <a href="{% url 'quizzes:take' course.pk %}" role="button">Try again</a>
+  <a href="{% url 'courses:detail' course.pk %}" role="button" class="secondary outline">Back to course</a>
+</div>
+{% endwith %}
+{% endblock %}

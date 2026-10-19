@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ quiz.title }}{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="{% url 'courses:my_courses' %}">My courses</a></li>
+    <li><a href="{% url 'courses:detail' course.pk %}">{{ course.title }}</a></li>
+    <li>Quiz</li>
+  </ul>
+</nav>
+
+<hgroup>
+  <h1>{{ quiz.title }}</h1>
+  <p>{{ form.questions|length }} question{{ form.questions|length|pluralize }} · pass mark {{ quiz.pass_mark }}% · answer every question</p>
+</hgroup>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  {% for field in form %}
+  <fieldset class="question">
+    <legend>{{ forloop.counter }}. {{ field.label }}</legend>
+    {{ field.errors }}
+    {{ field }}
+  </fieldset>
+  {% endfor %}
+  <div class="actions">
+    <button type="submit">Submit answers</button>
+    <a href="{% url 'courses:detail' course.pk %}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

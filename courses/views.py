@@ -3,7 +3,6 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.utils.functional import cached_property
 from django.views import View
 from django.views.generic import (
     CreateView,
@@ -18,46 +17,13 @@ from accounts.mixins import InstructorRequiredMixin, LearnerRequiredMixin
 from quizzes.models import Quiz
 
 from .forms import CourseForm, LessonForm
-from .models import Course, Enrollment, Lesson
+from .mixins import EnrolledLearnerMixin, InstructorCourseMixin, LearnerCourseMixin, OwnCourseMixin
+from .models import Course, Lesson
 from .services import enroll, mark_lesson_complete
 
 # ---------------------------------------------------------------------------
-# Learner pages. Courses are looked up with visible_to(), so a draft course is a
-# 404 unless the learner was already enrolled before it went back to draft.
+# Learner pages
 # ---------------------------------------------------------------------------
-
-
-class LearnerCourseMixin(LearnerRequiredMixin):
-    """Loads the course from the URL if this learner may see it, plus their enrolment."""
-
-    @cached_property
-    def course(self):
-        courses = Course.objects.visible_to(self.request.user)
-        return get_object_or_404(courses, pk=self.kwargs["pk"])
-
-    @cached_property
-    def enrollment(self):
-        enrollments = Enrollment.objects.with_progress()
-        return enrollments.filter(learner=self.request.user, course=self.course).first()
-
-    def get_context_data(self, **kwargs):
-        return super().get_context_data(course=self.course, enrollment=self.enrollment, **kwargs)
-
-
-class EnrolledLearnerMixin(LearnerCourseMixin):
-    """The learner must also be enrolled. If not, send them to the course page to enrol.
-
-    Users with the wrong role still get 403 from LearnerRequiredMixin.
-    """
-
-    def test_func(self):
-        return super().test_func() and self.enrollment is not None
-
-    def handle_no_permission(self):
-        if self.request.user.is_learner:
-            messages.error(self.request, "Enrol in this course to continue.")
-            return redirect("courses:detail", pk=self.course.pk)
-        return super().handle_no_permission()
 
 
 class CatalogueView(LearnerRequiredMixin, ListView):
@@ -153,31 +119,8 @@ class CompleteLessonView(EnrolledLearnerMixin, View):
 
 
 # ---------------------------------------------------------------------------
-# Instructor pages. Every course lookup goes through owned_by(), so another
-# instructor's course is a 404.
+# Instructor pages
 # ---------------------------------------------------------------------------
-
-
-class InstructorCourseMixin(InstructorRequiredMixin):
-    """Loads the course from the URL, limited to the logged-in instructor's own courses."""
-
-    @cached_property
-    def course(self):
-        courses = Course.objects.owned_by(self.request.user)
-        return get_object_or_404(courses, pk=self.kwargs["pk"])
-
-    def get_context_data(self, **kwargs):
-        return super().get_context_data(course=self.course, **kwargs)
-
-    def get_success_url(self):
-        return reverse("courses:course_manage", args=[self.course.pk])
-
-
-class OwnCourseMixin(InstructorCourseMixin):
-    """For views whose object is the course itself."""
-
-    def get_object(self, queryset=None):
-        return self.course
 
 
 class TeachCourseListView(InstructorRequiredMixin, ListView):
@@ -205,8 +148,10 @@ class CourseManageView(OwnCourseMixin, DetailView):
     template_name = "courses/course_manage.html"
 
     def get_context_data(self, **kwargs):
+        quiz = Quiz.objects.filter(course=self.course).prefetch_related("questions__choices")
         return super().get_context_data(
             lessons=self.course.lessons.all(),
+            quiz=quiz.first(),
             enrollment_count=self.course.enrollments.count(),
             **kwargs,
         )

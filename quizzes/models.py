@@ -69,6 +69,12 @@ class Choice(models.Model):
     def __str__(self):
         return self.text
 
+    def validate_constraints(self, exclude=None):
+        # "One correct choice" is validated across all of a question's choices at once, in
+        # BaseChoiceFormSet. Checking one row against the database would wrongly fail while
+        # the correct answer moves from one choice to another. The DB constraint still holds.
+        super().validate_constraints(exclude={*(exclude or ()), "is_correct"})
+
 
 class QuizAttempt(models.Model):
     """One submitted attempt. The score is a snapshot and is never recalculated."""

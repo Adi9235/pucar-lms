@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Quiz settings{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="{% url 'courses:teach_list' %}">My teaching</a></li>
+    <li><a href="{% url 'courses:course_manage' course.pk %}">{{ course.title }}</a></li>
+    <li>Quiz settings</li>
+  </ul>
+</nav>
+<article class="narrow">
+  <hgroup>
+    <h1>{% if object.pk %}Quiz settings{% else %}Create the quiz{% endif %}</h1>
+    <p>One multiple choice quiz per course. Learners can retake it as often as they like.</p>
+  </hgroup>
+  <form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <div class="actions">
+      <button type="submit">{% if object.pk %}Save settings{% else %}Create quiz{% endif %}</button>
+      <a href="{% url 'courses:course_manage' course.pk %}">Cancel</a>
+    </div>
+  </form>
+</article>
+{% endblock %}

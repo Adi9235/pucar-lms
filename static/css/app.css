@@ -83,3 +83,5 @@ fieldset.question legend { font-weight: 600; padding: 0 .25rem; }
 .choices-table input[type="checkbox"] { margin: 0; }
 
 table td.num, table th.num { text-align: right; }
+
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

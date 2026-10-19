@@ -51,4 +51,44 @@
     <div class="empty"><p>No lessons yet. Add the first one to get started.</p></div>
   {% endif %}
 </section>
+
+<section>
+  {% if quiz %}
+    <div class="page-head">
+      <hgroup>
+        <h2>{{ quiz.title }}</h2>
+        <p>Pass mark {{ quiz.pass_mark }}% · <a href="{% url 'quizzes:quiz_edit' course.pk %}">Quiz settings</a></p>
+      </hgroup>
+      <a href="{% url 'quizzes:question_create' course.pk %}" role="button" class="compact">Add question</a>
+    </div>
+    {% if quiz.questions.all %}
+      <table>
+        <thead><tr><th class="num">#</th><th>Question</th><th>Correct answer</th><th></th></tr></thead>
+        <tbody>
+          {% for question in quiz.questions.all %}
+          <tr>
+            <td class="num">{{ question.order }}</td>
+            <td>{{ question.text }}</td>
+            <td>{% for choice in question.choices.all %}{% if choice.is_correct %}{{ choice.text }}{% endif %}{% endfor %}</td>
+            <td>
+              <div class="actions">
+                <a href="{% url 'quizzes:question_update' course.pk question.pk %}">Edit</a>
+                <a href="{% url 'quizzes:question_delete' course.pk question.pk %}">Delete</a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="empty"><p>No questions yet. Learners will see the quiz once it has at least one.</p></div>
+    {% endif %}
+  {% else %}
+    <h2>Quiz</h2>
+    <div class="empty">
+      <p>This course has no quiz yet.</p>
+      <a href="{% url 'quizzes:quiz_edit' course.pk %}" role="button">Create a quiz</a>
+    </div>
+  {% endif %}
+</section>
 {% endblock %}
